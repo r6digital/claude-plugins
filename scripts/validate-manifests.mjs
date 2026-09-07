@@ -1,7 +1,7 @@
 // ABOUTME: Validates marketplace.json and every plugin.json in this repository.
 // ABOUTME: Checks JSON syntax, required fields, and that each plugin source directory exists.
 
-import { readFileSync, existsSync, statSync } from 'node:fs'
+import { readFileSync, existsSync, statSync, realpathSync } from 'node:fs'
 import { join, dirname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -23,6 +23,11 @@ function readJson(absPath, relPath) {
 }
 
 const marketplaceRel = '.claude-plugin/marketplace.json'
+// True when child is repoRoot itself or sits beneath it.
+function inside(child, root) {
+  return child === root || child.startsWith(root + sep)
+}
+
 const marketplaceAbs = join(repoRoot, marketplaceRel)
 
 if (!existsSync(marketplaceAbs)) {
@@ -66,12 +71,20 @@ if (!existsSync(marketplaceAbs)) {
         }
         const pluginDirAbs = join(repoRoot, entry.source)
         // A "./" prefix does not stop "./../elsewhere" from leaving the tree.
-        if (pluginDirAbs !== repoRoot && !pluginDirAbs.startsWith(repoRoot + sep)) {
+        // This catches it before the path reaches the file system.
+        if (!inside(pluginDirAbs, repoRoot)) {
           fail(where, `source "${entry.source}" must stay inside the repository`)
           return
         }
         if (!existsSync(pluginDirAbs) || !statSync(pluginDirAbs).isDirectory()) {
           fail(where, `source directory "${entry.source}" does not exist`)
+          return
+        }
+        // A symlink keeps a repository-relative path, so the check above passes.
+        // Compare the resolved paths as well. Resolve both sides: on macOS the
+        // repository root can itself sit under a symlinked prefix.
+        if (!inside(realpathSync(pluginDirAbs), realpathSync(repoRoot))) {
+          fail(where, `source "${entry.source}" must stay inside the repository`)
           return
         }
 

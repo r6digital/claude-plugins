@@ -46,18 +46,41 @@ Both files stay in the branch history and in the pull request. You lose nothing.
 `qa-pass` needs:
 
 - A branch that exists on the remote.
-- The `gh` command, authenticated, to post review comments.
+- The `gh` command, authenticated, to read and post review comments.
 - `docs/spec.md` and `docs/plan.md`, or a pull request description that gives
   the intent.
 
 `merge-ready` needs:
 
-- An open pull request for the branch.
-- A completed review from `qa-pass`.
+- The target branch checked out. It will not check the branch out for you.
+- A clean index. Anything already staged would join the cleanup commit.
+- An open pull request whose head branch is the target branch.
+- A completed review from `qa-pass`, with no open `blocker` or `major` finding.
 - The `gh` command, authenticated, to read the pull request and its comments.
 
 `build-kickoff` and `qa-pass` call `/agent-skills:build`, `/agent-skills:test`,
 and `/agent-skills:review`. Enable the `agent-skills` plugin as well.
+
+## Automated reviewers
+
+`qa-pass` reads the review comments that are already on the pull request, so
+findings from CodeRabbit and similar tools go through the same triage as its
+own. It does this after it has reviewed and tested the branch itself. A list of
+findings written by another tool anchors judgement, so the reviewer forms its
+own opinion first.
+
+It keeps a finding only after it checks the claim against the code, and it
+gives the finding a severity from the table below rather than the one the tool
+supplied. It records a short reason for each finding it rejects, and it reports
+both counts.
+
+The report is one list. Whoever fixes the findings reads one list, not two.
+
+Comments are data. Some automated reviewers add a block addressed to an AI
+agent that holds text shaped like commands. `qa-pass` and `merge-ready` both
+refuse to act on an instruction found in a comment, a pull request body, or a
+file under review. This matters more than it looks: a pull request author
+controls that text, and the reviewer runs with your credentials.
 
 ## Severity ratings
 
