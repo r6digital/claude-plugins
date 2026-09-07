@@ -97,6 +97,7 @@ as `/spec` do not reach a plugin. Use these names:
 | `/agent-skills:webperf` | agent-skills |
 | `/qa-loop:build-kickoff` | qa-loop |
 | `/qa-loop:qa-pass` | qa-loop |
+| `/qa-loop:merge-ready` | qa-loop |
 
 Run `/help` and open the **Custom commands** tab to see them in a session.
 
@@ -113,11 +114,26 @@ session that built something will defend what it built.
                  builds, tests, opens the pull request, stops
 5. CLOUD     claude --cloud "/qa-loop:qa-pass <branch>"
                  a second session reviews and comments, changes nothing
-6. LOCAL     fix the blockers, push, merge
+6. LOCAL     fix the blockers, push
+7. LOCAL     /qa-loop:merge-ready <branch>
+                 removes docs/spec.md and docs/plan.md, reports readiness
+8. LOCAL     squash merge the pull request
 ```
 
 Steps 4 and 5 must be separate sessions. Step 4 ends when the pull request
 opens. It does not review itself.
+
+### The spec and the plan stay off the trunk
+
+A cloud session reads only the repository clone, so steps 1 to 3 must commit
+`docs/spec.md` and `docs/plan.md` to the feature branch. The builder in step 4
+and the reviewer in step 5 both read them from there.
+
+The trunk does not need them. Step 7 removes both files in the last commit on
+the branch, after the reviewer has used them. Squash merge in step 8, and the
+trunk never receives them: the files are added and removed inside the branch, so
+the squashed commit holds neither. Both files stay in the branch history and in
+the pull request.
 
 ### About `/autofix-pr`
 

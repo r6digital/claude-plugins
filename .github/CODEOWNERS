@@ -1,0 +1,17 @@
+# Files here become instructions that run with full tool permissions in every
+# project and every cloud session that enables these plugins. Changes to the
+# paths below need review from a code owner.
+
+# The manifests decide what is published and at which version.
+/.claude-plugin/            @SebastianDickerson
+/plugins/*/.claude-plugin/  @SebastianDickerson
+
+# Commands, skills, agents, and hooks are executed instructions.
+/plugins/*/commands/        @SebastianDickerson
+/plugins/*/skills/          @SebastianDickerson
+/plugins/*/agents/          @SebastianDickerson
+/plugins/*/hooks/           @SebastianDickerson
+
+# CI decides what is allowed to merge.
+/.github/                   @SebastianDickerson
+/scripts/                   @SebastianDickerson

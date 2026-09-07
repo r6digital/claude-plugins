@@ -2,7 +2,7 @@
 // ABOUTME: Checks JSON syntax, required fields, and that each plugin source directory exists.
 
 import { readFileSync, existsSync, statSync } from 'node:fs'
-import { join, dirname, resolve } from 'node:path'
+import { join, dirname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -65,6 +65,11 @@ if (!existsSync(marketplaceAbs)) {
           return
         }
         const pluginDirAbs = join(repoRoot, entry.source)
+        // A "./" prefix does not stop "./../elsewhere" from leaving the tree.
+        if (pluginDirAbs !== repoRoot && !pluginDirAbs.startsWith(repoRoot + sep)) {
+          fail(where, `source "${entry.source}" must stay inside the repository`)
+          return
+        }
         if (!existsSync(pluginDirAbs) || !statSync(pluginDirAbs).isDirectory()) {
           fail(where, `source directory "${entry.source}" does not exist`)
           return
