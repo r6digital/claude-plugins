@@ -1,7 +1,7 @@
 // ABOUTME: Tests for validate-manifests.mjs — builds broken manifest trees and asserts the errors.
 // ABOUTME: Run with `node scripts/validate-manifests-test.mjs`.
 
-import { mkdtempSync, mkdirSync, writeFileSync, cpSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, cpSync, rmSync, symlinkSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
@@ -179,6 +179,46 @@ test(
       join(repo, '.claude-plugin/marketplace.json'),
       JSON.stringify(
         { name: 'acmeco-plugins', owner, plugins: [entry({ source: './../outside/alpha' })] },
+        null,
+        2
+      )
+    )
+    const { code, output } = run(repo)
+    if (code === 0) throw new Error(`expected a non-zero exit, got 0. Output:\n${output}`)
+    if (!output.includes('must stay inside the repository')) {
+      throw new Error(`expected "must stay inside the repository" in output:\n${output}`)
+    }
+    passed += 1
+    console.log(`ok   ${label}`)
+  } catch (err) {
+    failures.push(`${label}: ${err.message}`)
+    console.log(`FAIL ${label} — ${err.message}`)
+  } finally {
+    rmSync(parent, { recursive: true, force: true })
+  }
+}
+
+// A symlinked source keeps a repository-relative path, so the lexical check
+// passes. Only the resolved path shows that it leaves the tree.
+{
+  const label = 'a source symlinked out of the repository is reported'
+  const parent = mkdtempSync(join(tmpdir(), 'manifest-symlink-'))
+  try {
+    const repo = join(parent, 'repo')
+    mkdirSync(join(repo, '.claude-plugin'), { recursive: true })
+    mkdirSync(join(repo, 'scripts'), { recursive: true })
+    mkdirSync(join(repo, 'plugins'), { recursive: true })
+    cpSync(validator, join(repo, 'scripts/validate-manifests.mjs'))
+    mkdirSync(join(parent, 'outside/alpha/.claude-plugin'), { recursive: true })
+    writeFileSync(
+      join(parent, 'outside/alpha/.claude-plugin/plugin.json'),
+      JSON.stringify(manifest(), null, 2)
+    )
+    symlinkSync(join(parent, 'outside/alpha'), join(repo, 'plugins/alpha'), 'dir')
+    writeFileSync(
+      join(repo, '.claude-plugin/marketplace.json'),
+      JSON.stringify(
+        { name: 'acmeco-plugins', owner, plugins: [entry({ source: './plugins/alpha' })] },
         null,
         2
       )

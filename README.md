@@ -113,8 +113,9 @@ session that built something will defend what it built.
 4. CLOUD     claude --cloud "/qa-loop:build-kickoff docs/plan.md"
                  builds, tests, opens the pull request, stops
 5. CLOUD     claude --cloud "/qa-loop:qa-pass <branch>"
-                 a second session reviews and comments, changes nothing
-6. LOCAL     fix the blockers, push
+                 a second session reviews, tests, triages the bot
+                 findings into one list, comments, changes nothing
+6. LOCAL     fix the blockers and the major findings, push
 7. LOCAL     /qa-loop:merge-ready <branch>
                  removes docs/spec.md and docs/plan.md, reports readiness
 8. LOCAL     squash merge the pull request
