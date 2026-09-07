@@ -1,0 +1,41 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "{{ORG}}-plugins",
+  "description": "Internal Claude Code plugins: the shared engineering skill set plus our QA workflow glue.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "{{ORG}}",
+    "url": "https://github.com/{{ORG}}"
+  },
+  "plugins": [
+    {
+      "name": "agent-skills",
+      "displayName": "Agent Skills",
+      "source": "./plugins/agent-skills",
+      "version": "0.6.9",
+      "description": "Production-grade engineering skills covering every phase of software development: spec, plan, build, verify, review, and ship.",
+      "author": {
+        "name": "Addy Osmani"
+      },
+      "homepage": "https://github.com/addyosmani/agent-skills",
+      "repository": "https://github.com/addyosmani/agent-skills",
+      "license": "MIT",
+      "keywords": ["skills", "agents", "engineering", "spec", "tdd", "review", "ship"],
+      "category": "engineering"
+    },
+    {
+      "name": "qa-loop",
+      "displayName": "QA Loop",
+      "source": "./plugins/qa-loop",
+      "version": "0.1.0",
+      "description": "Builder and reviewer session openers that split implementation from independent QA.",
+      "author": {
+        "name": "{{ORG}}"
+      },
+      "repository": "https://github.com/{{ORG}}/claude-plugins",
+      "license": "UNLICENSED",
+      "keywords": ["qa", "review", "pull-request", "workflow"],
+      "category": "workflow"
+    }
+  ]
+}

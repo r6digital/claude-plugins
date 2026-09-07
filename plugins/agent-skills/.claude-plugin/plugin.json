@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "agent-skills",
+  "displayName": "Agent Skills",
+  "version": "0.6.9",
+  "description": "Production-grade engineering skills covering every phase of software development: spec, plan, build, verify, review, and ship.",
+  "author": {
+    "name": "Addy Osmani"
+  },
+  "homepage": "https://github.com/addyosmani/agent-skills",
+  "repository": "https://github.com/addyosmani/agent-skills",
+  "license": "MIT",
+  "keywords": ["skills", "agents", "engineering", "spec", "tdd", "review", "ship"]
+}
