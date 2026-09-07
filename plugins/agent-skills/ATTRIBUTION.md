@@ -54,6 +54,22 @@ them at the documented default location, so our `plugin.json` needs no
 
 No file we copied needs a package manager. The plugin adds no dependencies.
 
+## Known upstream defects we did not correct
+
+Three upstream files carry path or assertion errors. We left them exactly as
+upstream wrote them, so this copy stays diffable. The plugin
+[README](./README.md) describes each one and gives the correction to apply by
+hand:
+
+- `hooks/SIMPLIFY-IGNORE.md` and `hooks/SDD-CACHE.md` — project-relative hook
+  paths that do not resolve in a plugin install.
+- `skills/idea-refine/SKILL.md` — a project-relative script path.
+- `hooks/session-start-test.sh` — a stale assertion. No runtime effect.
+
+If you correct any of these here, this copy stops being byte-identical. Record
+the change in this file and add a suffix to the version in
+`.claude-plugin/plugin.json`.
+
 ## How to diff against upstream
 
 ```bash

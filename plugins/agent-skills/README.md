@@ -62,3 +62,33 @@ differ from upstream.
 The plugin adds about 2,600 tokens to every session. That is the always-on cost
 of 34 skill descriptions and 4 agent descriptions. Each skill costs more only
 when it fires.
+
+## Known upstream defects
+
+We vendor this plugin byte-identical, so these upstream defects are still here.
+Do not correct them in place. Report them upstream, then pull the fix in with a
+new commit SHA.
+
+### The optional hook guides give the wrong path
+
+`hooks/SIMPLIFY-IGNORE.md` and `hooks/SDD-CACHE.md` describe two extra hooks you
+can wire by hand. Both tell you to run
+`bash "${CLAUDE_PROJECT_DIR}/hooks/<script>.sh"`. That path holds when the
+upstream repository is your project. It is wrong for a plugin install, where the
+scripts sit in the plugin directory instead. A hook wired that way exits 127 on
+every matching tool call.
+
+Use `"${CLAUDE_PLUGIN_ROOT}"/hooks/<script>.sh` instead. The `SessionStart` hook
+in `hooks/hooks.json` already does this and works as shipped.
+
+### `skills/idea-refine/SKILL.md` gives a relative script path
+
+It calls `bash skills/idea-refine/scripts/idea-refine.sh`, which resolves
+against your project, not the plugin. Use
+`"${CLAUDE_PLUGIN_ROOT}"/skills/idea-refine/scripts/idea-refine.sh`.
+
+### `hooks/session-start-test.sh` always fails
+
+The test asserts `priority` and `message` fields. `hooks/session-start.sh` emits
+only `hookSpecificOutput`. The hook is correct; the test is stale. Nothing runs
+this file at session time, so it has no runtime effect. Our CI does not run it.

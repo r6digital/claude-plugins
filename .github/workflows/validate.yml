@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   manifests:
     runs-on: ubuntu-latest
@@ -14,7 +17,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Validate manifest syntax and required fields
+      - name: Test the manifest validator
+        run: node scripts/validate-manifests-test.mjs
+
+      - name: Validate manifest fields and plugin directories
         run: node scripts/validate-manifests.mjs
 
       - name: Validate every JSON file parses
@@ -31,8 +37,18 @@ jobs:
           done < <(find . -name '*.json' -not -path './.git/*')
           exit $rc
 
-      - name: Install Claude Code CLI
-        run: npm install --global @anthropic-ai/claude-code
+      - name: Report unreplaced organisation placeholders
+        run: |
+          set -uo pipefail
+          if git grep -In '{{ORG}}' -- . ':!.github/workflows/validate.yml' > /tmp/placeholders.txt; then
+            echo "::warning::This repository still carries {{ORG}} placeholders. Replace them with the organisation name before anyone installs from it."
+            cat /tmp/placeholders.txt
+          else
+            echo "No {{ORG}} placeholders remain."
+          fi
+
+      - name: Install the Claude Code CLI
+        run: npm install --global @anthropic-ai/claude-code@2.1.263
 
       - name: Run claude plugin validate
         run: |
@@ -41,12 +57,10 @@ jobs:
             echo "SKIPPED: the claude CLI is not on PATH."
             exit 0
           fi
-          if ! claude --help 2>&1 | grep -qE '^\s*plugin\b'; then
-            echo "SKIPPED: this claude CLI has no 'plugin' subcommand."
-            exit 0
-          fi
-          if ! claude plugin --help 2>&1 | grep -qE '^\s*validate\b'; then
-            echo "SKIPPED: this claude CLI has no 'plugin validate' subcommand."
+          # Probe by exit code, not by matching help text, so a change to the
+          # help layout cannot turn a real failure into a silent skip.
+          if ! claude plugin validate --help >/dev/null 2>&1; then
+            echo "SKIPPED: this claude CLI ($(claude --version 2>&1)) has no 'plugin validate' subcommand."
             exit 0
           fi
           rc=0

@@ -3,7 +3,7 @@
 Our private Claude Code plugin marketplace.
 
 It holds the skills and commands we want in every project. A project gets them
-by committing eight lines to `.claude/settings.json`. Local sessions and cloud
+by committing one block to `.claude/settings.json`. Local sessions and cloud
 sessions (`claude --cloud`) both read that file, so both get the same tools.
 
 > Replace `{{ORG}}` with our GitHub organisation name everywhere in this
@@ -229,6 +229,7 @@ Run `/reload-plugins` after each edit.
 Validate before you push:
 
 ```bash
+node scripts/validate-manifests-test.mjs
 node scripts/validate-manifests.mjs
 claude plugin validate .
 claude plugin validate ./plugins/agent-skills

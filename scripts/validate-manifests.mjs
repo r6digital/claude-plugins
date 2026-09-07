@@ -43,6 +43,10 @@ if (!existsSync(marketplaceAbs)) {
       const seen = new Set()
       marketplace.plugins.forEach((entry, index) => {
         const where = `${marketplaceRel} plugins[${index}]`
+        if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
+          fail(where, 'entry must be an object')
+          return
+        }
         if (typeof entry.name !== 'string' || entry.name.length === 0) {
           fail(where, 'missing required field "name"')
           return
@@ -79,6 +83,14 @@ if (!existsSync(marketplaceAbs)) {
           fail(pluginRel, 'missing required field "name"')
         } else if (plugin.name !== entry.name) {
           fail(pluginRel, `name "${plugin.name}" does not match marketplace entry "${entry.name}"`)
+        }
+        // Claude Code offers an update only when the version string changes, so both
+        // manifests must carry it and the two must agree.
+        if (entry.version === undefined) {
+          fail(where, `plugin "${entry.name}" is missing required field "version"`)
+        }
+        if (plugin.version === undefined) {
+          fail(pluginRel, 'missing required field "version"')
         }
         if (entry.version !== undefined && plugin.version !== undefined && entry.version !== plugin.version) {
           fail(pluginRel, `version "${plugin.version}" does not match marketplace entry "${entry.version}"`)
