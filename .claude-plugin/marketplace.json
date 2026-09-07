@@ -27,7 +27,7 @@
       "name": "qa-loop",
       "displayName": "QA Loop",
       "source": "./plugins/qa-loop",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Builder and reviewer session openers that split implementation from independent QA.",
       "author": {
         "name": "r6digital"
