@@ -30,7 +30,7 @@ The plugin also carries 25 model-invoked skills. Claude selects them by task,
 without a command. Examples: `agent-skills:test-driven-development`,
 `agent-skills:security-and-hardening`, `agent-skills:debugging-and-error-recovery`.
 
-Run `claude plugin details agent-skills@{{ORG}}-plugins` for the full list and
+Run `claude plugin details agent-skills@r6digital-plugins` for the full list and
 the token cost of each one.
 
 ## Agents

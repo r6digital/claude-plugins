@@ -6,7 +6,7 @@ It holds the skills and commands we want in every project. A project gets them
 by committing one block to `.claude/settings.json`. Local sessions and cloud
 sessions (`claude --cloud`) both read that file, so both get the same tools.
 
-> Replace `{{ORG}}` with our GitHub organisation name everywhere in this
+> Replace `r6digital` with our GitHub organisation name everywhere in this
 > repository before you publish it. The `.claude-plugin/marketplace.json` file
 > and the snippets below all carry the placeholder.
 
@@ -39,16 +39,16 @@ Commit this to the project's `.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "{{ORG}}-plugins": {
+    "r6digital-plugins": {
       "source": {
         "source": "github",
-        "repo": "{{ORG}}/claude-plugins"
+        "repo": "r6digital/claude-plugins"
       }
     }
   },
   "enabledPlugins": {
-    "agent-skills@{{ORG}}-plugins": true,
-    "qa-loop@{{ORG}}-plugins": true
+    "agent-skills@r6digital-plugins": true,
+    "qa-loop@r6digital-plugins": true
   }
 }
 ```
@@ -65,17 +65,17 @@ The trust prompt does not always fire, so the automatic install does not always
 happen. Install by hand on those machines:
 
 ```
-/plugin marketplace add {{ORG}}/claude-plugins
-/plugin install agent-skills@{{ORG}}-plugins
-/plugin install qa-loop@{{ORG}}-plugins
+/plugin marketplace add r6digital/claude-plugins
+/plugin install agent-skills@r6digital-plugins
+/plugin install qa-loop@r6digital-plugins
 ```
 
 The same steps work from a terminal:
 
 ```bash
-claude plugin marketplace add {{ORG}}/claude-plugins
-claude plugin install agent-skills@{{ORG}}-plugins
-claude plugin install qa-loop@{{ORG}}-plugins
+claude plugin marketplace add r6digital/claude-plugins
+claude plugin install agent-skills@r6digital-plugins
+claude plugin install qa-loop@r6digital-plugins
 claude plugin list
 ```
 
@@ -152,7 +152,7 @@ whole install.
 
 This repository is private, so a cloud session must authenticate to clone it.
 Give the cloud environment a fine-grained personal access token with read-only
-`Contents` access to `{{ORG}}/claude-plugins`, exposed as `GITHUB_TOKEN` in the
+`Contents` access to `r6digital/claude-plugins`, exposed as `GITHUB_TOKEN` in the
 cloud environment settings.
 
 Background marketplace refreshes turn off git credential helpers by default. If
@@ -192,8 +192,8 @@ Or rewrite the URL with a token:
 
 ```bash
 git config --global \
-  url."https://x-access-token:YOUR_TOKEN@github.com/{{ORG}}/claude-plugins".insteadOf \
-  "https://github.com/{{ORG}}/claude-plugins"
+  url."https://x-access-token:YOUR_TOKEN@github.com/r6digital/claude-plugins".insteadOf \
+  "https://github.com/r6digital/claude-plugins"
 ```
 
 ### `/agent-skills:spec` is ambiguous or reaches the wrong copy

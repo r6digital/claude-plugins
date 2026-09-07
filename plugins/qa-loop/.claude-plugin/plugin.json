@@ -5,9 +5,9 @@
   "version": "0.1.0",
   "description": "Builder and reviewer session openers that split implementation from independent QA.",
   "author": {
-    "name": "{{ORG}}"
+    "name": "r6digital"
   },
-  "repository": "https://github.com/{{ORG}}/claude-plugins",
+  "repository": "https://github.com/r6digital/claude-plugins",
   "license": "UNLICENSED",
   "keywords": ["qa", "review", "pull-request", "workflow"]
 }

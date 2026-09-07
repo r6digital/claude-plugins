@@ -1,11 +1,11 @@
 {
   "$schema": "https://code.claude.com/schemas/marketplace.json",
-  "name": "{{ORG}}-plugins",
+  "name": "r6digital-plugins",
   "description": "Internal Claude Code plugins: the shared engineering skill set plus our QA workflow glue.",
   "version": "1.0.0",
   "owner": {
-    "name": "{{ORG}}",
-    "url": "https://github.com/{{ORG}}"
+    "name": "r6digital",
+    "url": "https://github.com/r6digital"
   },
   "plugins": [
     {
@@ -30,9 +30,9 @@
       "version": "0.1.0",
       "description": "Builder and reviewer session openers that split implementation from independent QA.",
       "author": {
-        "name": "{{ORG}}"
+        "name": "r6digital"
       },
-      "repository": "https://github.com/{{ORG}}/claude-plugins",
+      "repository": "https://github.com/r6digital/claude-plugins",
       "license": "UNLICENSED",
       "keywords": ["qa", "review", "pull-request", "workflow"],
       "category": "workflow"
