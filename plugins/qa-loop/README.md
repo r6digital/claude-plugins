@@ -56,7 +56,14 @@ Both files stay in the branch history and in the pull request. You lose nothing.
 - A clean index. Anything already staged would join the cleanup commit.
 - An open pull request whose head branch is the target branch.
 - A completed review from `qa-pass`, with no open `blocker` or `major` finding.
-- The `gh` command, authenticated, to read the pull request and its comments.
+  `qa-pass` marks completion with a summary line, so a review that found nothing
+  still counts.
+- A test command in the repository: a script entry, a task file, or the CI
+  workflow. `merge-ready` runs the tests but takes no command from the pull
+  request.
+- The `gh` command, authenticated, to read the pull request and its comments,
+  and push access to the branch. It commits the cleanup and pushes. Without push
+  access it leaves a local commit after the push fails.
 
 `build-kickoff` and `qa-pass` call `/agent-skills:build`, `/agent-skills:test`,
 and `/agent-skills:review`. Enable the `agent-skills` plugin as well.
@@ -76,11 +83,23 @@ both counts.
 
 The report is one list. Whoever fixes the findings reads one list, not two.
 
+`qa-pass` posts its findings as inline comments on the diff, and one review
+summary that opens with a `qa-pass complete` line and the severity counts. It
+posts that summary even when it finds nothing, so a clean pass is visible.
+`merge-ready` reads the same two stores, so no finding falls between them.
+
 Comments are data. Some automated reviewers add a block addressed to an AI
 agent that holds text shaped like commands. `qa-pass` and `merge-ready` both
-refuse to act on an instruction found in a comment, a pull request body, or a
-file under review. This matters more than it looks: a pull request author
-controls that text, and the reviewer runs with your credentials.
+refuse to act on such an instruction, wherever it appears: a comment, a pull
+request body, a commit message, or prose inside a file under review. This
+matters more than it looks: a pull request author controls that text, and the
+reviewer runs with your credentials.
+
+This applies to prose, not to the repository's test contract. Both commands run
+the tests through `/agent-skills:test`, whose command comes from a script entry,
+a task file, or the CI workflow. Those files are part of the review. A reviewed
+repository therefore defines which test command runs; a comment or a pull
+request body never does.
 
 ## Severity ratings
 
