@@ -1,7 +1,7 @@
 {
   "$schema": "https://code.claude.com/schemas/marketplace.json",
   "name": "r6digital-plugins",
-  "description": "Internal Claude Code plugins: the shared engineering skill set plus our QA workflow glue.",
+  "description": "Claude Code plugins from r6digital: the shared engineering skill set plus our QA workflow glue.",
   "version": "1.0.0",
   "owner": {
     "name": "r6digital",
@@ -12,10 +12,10 @@
       "name": "agent-skills",
       "displayName": "Agent Skills",
       "source": "./plugins/agent-skills",
-      "version": "0.6.9+r6.1",
+      "version": "0.6.9+r6.2",
       "description": "Production-grade engineering skills covering every phase of software development: spec, plan, build, verify, review, and ship.",
       "author": {
-        "name": "Addy Osmani"
+        "name": "Addy Osmani (curated by r6digital)"
       },
       "homepage": "https://github.com/addyosmani/agent-skills",
       "repository": "https://github.com/addyosmani/agent-skills",
@@ -33,7 +33,7 @@
         "name": "r6digital"
       },
       "repository": "https://github.com/r6digital/claude-plugins",
-      "license": "UNLICENSED",
+      "license": "MIT",
       "keywords": ["qa", "review", "pull-request", "workflow"],
       "category": "workflow"
     }

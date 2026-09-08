@@ -11,7 +11,7 @@ every difference.
 | Upstream commit SHA | `48cb1168aeaaa70dfc2bbf709eddfa2a8ed8129a` |
 | Upstream commit date | 2026-09-06 |
 | Upstream version | 0.6.9 |
-| Our version | 0.6.9+r6.1 |
+| Our version | 0.6.9+r6.2 |
 | Date vendored | 2026-09-08 |
 | Licence | MIT — see [LICENSE](./LICENSE) |
 
@@ -22,7 +22,7 @@ file, as the licence requires.
 ## How we version this copy
 
 The version has two parts. `0.6.9` is the upstream version we started from.
-`+r6.1` is our revision of that base. The revision increases when we change this
+`+r6.2` is our revision of that base. The revision increases when we change this
 copy. The base changes only when we take a newer upstream commit.
 
 Both `.claude-plugin/plugin.json` and the repository marketplace file must show
@@ -112,6 +112,11 @@ was stale.
 `session-start.sh` is the only file in this plugin that runs by itself. We
 corrected its test instead of deleting it, and the repository workflow now runs
 that test on every pull request.
+
+`.claude-plugin/plugin.json` is our own file, not a copy, so the table above
+omits it. Its `author` field reads `Addy Osmani (curated by r6digital)`. The
+skills are his work. The changes recorded in this file are ours. The field says
+both, so nobody reads this copy as his release.
 
 ## Known upstream defects we did not correct
 

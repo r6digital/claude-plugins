@@ -1,14 +1,11 @@
 # claude-plugins
 
-Our private Claude Code plugin marketplace.
+The Claude Code plugin marketplace we use at r6digital. It is public, so
+anybody may add it.
 
 It holds the skills and commands we want in every project. A project gets them
 by committing one block to `.claude/settings.json`. Local sessions and cloud
 sessions (`claude --cloud`) both read that file, so both get the same tools.
-
-> Replace `r6digital` with our GitHub organisation name everywhere in this
-> repository before you publish it. The `.claude-plugin/marketplace.json` file
-> and the snippets below all carry the placeholder.
 
 ## Contents
 
@@ -165,20 +162,10 @@ A cloud session gets only three things:
 It does **not** read `~/.claude`. That is why the settings file above is the
 whole install.
 
-### Private marketplace access
+### Access
 
-This repository is private, so a cloud session must authenticate to clone it.
-Give the cloud environment a fine-grained personal access token with read-only
-`Contents` access to `r6digital/claude-plugins`, exposed as `GITHUB_TOKEN` in the
-cloud environment settings.
-
-Background marketplace refreshes turn off git credential helpers by default. If
-a refresh fails on a private repository, set this so the cached copy survives
-the failure:
-
-```bash
-CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE=1
-```
+This repository is public. A cloud session clones it without credentials, so
+the cloud environment needs no GitHub token for the marketplace.
 
 ## Troubleshooting
 
@@ -197,30 +184,28 @@ plugins, skills, agents, hooks, and plugin MCP servers.
 The automatic install runs when somebody trusts the folder. Use the manual
 fallback above.
 
-### A private marketplace fails to refresh
+### The marketplace fails to refresh
 
-Set up the credential helper on the machine:
-
-```bash
-gh auth setup-git
-```
-
-Or rewrite the URL with a token:
+A background refresh replaces the cached copy. Set this so the cached copy
+survives a failed refresh:
 
 ```bash
-git config --global \
-  url."https://x-access-token:YOUR_TOKEN@github.com/r6digital/claude-plugins".insteadOf \
-  "https://github.com/r6digital/claude-plugins"
+CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE=1
 ```
 
 ### `/agent-skills:spec` is ambiguous or reaches the wrong copy
 
-The public marketplace `addy-agent-skills` ships a plugin with the same name,
-`agent-skills`. If somebody installed that one already, two plugins compete for
-the namespace. Remove the public copy:
+Addy Osmani's own marketplace, `addy-agent-skills`, ships a plugin with the
+same name. Two plugins with one name compete for the `agent-skills:` namespace,
+so a machine needs one of them, not both.
+
+Keep the copy that machine should follow. Ours is pinned to a commit and carries
+the removals in [ATTRIBUTION.md](./plugins/agent-skills/ATTRIBUTION.md). His is
+the upstream release. Uninstall the other one:
 
 ```bash
-claude plugin uninstall agent-skills@addy-agent-skills
+claude plugin uninstall agent-skills@addy-agent-skills   # to keep ours
+claude plugin uninstall agent-skills@r6digital-plugins   # to keep upstream
 ```
 
 We keep the name `agent-skills` on purpose. Every command in that plugin calls
@@ -278,3 +263,20 @@ happens and prints the reason for each removal.
 
 The `.claude/settings.json` shape in this README matches the current
 documentation exactly. It needed no correction.
+
+## Licence
+
+| Path | Licence | Copyright |
+| --- | --- | --- |
+| `plugins/agent-skills/` | MIT — [LICENSE](./plugins/agent-skills/LICENSE) | 2025 Addy Osmani |
+| Everything else | MIT — [LICENSE](./LICENSE) | 2026 r6digital |
+
+`plugins/agent-skills` is a curated copy of
+[`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills). It
+keeps its own licence next to the copied files, as that licence requires.
+[ATTRIBUTION.md](./plugins/agent-skills/ATTRIBUTION.md) records every
+difference from upstream.
+
+Neither licence gives a warranty. Read what you install: every command, skill,
+agent, and hook here is an instruction that a coding agent runs with your tool
+permissions.

@@ -8,6 +8,6 @@
     "name": "r6digital"
   },
   "repository": "https://github.com/r6digital/claude-plugins",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "keywords": ["qa", "review", "pull-request", "workflow"]
 }
