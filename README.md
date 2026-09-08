@@ -256,7 +256,7 @@ claude plugin validate ./plugins/qa-loop
 CI runs the same checks on every push and pull request. See
 [.github/workflows/validate.yml](./.github/workflows/validate.yml).
 
-## Update the vendored copy
+## Update the curated copy
 
 `plugins/agent-skills` is a curated copy of an upstream repository, pinned to a
 commit. We removed two optional hooks and corrected one test.
