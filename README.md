@@ -15,7 +15,7 @@ sessions (`claude --cloud`) both read that file, so both get the same tools.
 | Plugin | What it gives you |
 | --- | --- |
 | [`agent-skills`](./plugins/agent-skills) | 9 commands, 25 skills, and 4 agents for the full development cycle. Vendored from [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) under MIT. |
-| [`qa-loop`](./plugins/qa-loop) | 2 commands that keep the builder session and the reviewer session apart. Written here. |
+| [`qa-loop`](./plugins/qa-loop) | 3 commands that keep the builder session and the reviewer session apart. Written here. |
 
 ## How updates reach projects
 
