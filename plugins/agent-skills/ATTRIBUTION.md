@@ -1,6 +1,8 @@
 # Attribution
 
-This plugin is a vendored copy of a third-party project.
+This plugin is a curated copy of a third-party project. We started from an
+upstream commit. We then removed some files and corrected one. This file records
+every difference.
 
 | Field | Value |
 | --- | --- |
@@ -9,17 +11,24 @@ This plugin is a vendored copy of a third-party project.
 | Upstream commit SHA | `48cb1168aeaaa70dfc2bbf709eddfa2a8ed8129a` |
 | Upstream commit date | 2026-09-06 |
 | Upstream version | 0.6.9 |
+| Our version | 0.6.9+r6.1 |
 | Date vendored | 2026-09-08 |
 | Licence | MIT — see [LICENSE](./LICENSE) |
 
-Copyright (c) 2025 Addy Osmani. The MIT licence permits use, copying, and
-distribution. The licence text stays in `LICENSE` next to this file, as the
-licence requires.
+Copyright (c) 2025 Addy Osmani. The MIT licence permits use, copying,
+modification, and distribution. The licence text stays in `LICENSE` next to this
+file, as the licence requires.
+
+## How we version this copy
+
+The version has two parts. `0.6.9` is the upstream version we started from.
+`+r6.1` is our revision of that base. The revision increases when we change this
+copy. The base changes only when we take a newer upstream commit.
+
+Both `.claude-plugin/plugin.json` and the repository marketplace file must show
+the same version.
 
 ## What we copied
-
-Every file is byte-identical to the upstream commit above. We changed no file
-contents.
 
 | Upstream path | Path here |
 | --- | --- |
@@ -27,9 +36,12 @@ contents.
 | `skills/` | `skills/` |
 | `agents/` | `agents/` |
 | `references/` | `references/` |
-| `hooks/` | `hooks/` |
+| `hooks/` | `hooks/` (see [What we removed](#what-we-removed)) |
 | `docs/agents.md` | `docs/agents.md` |
 | `LICENSE` | `LICENSE` |
+
+Each copied file is byte-identical to the upstream commit, except the one file
+listed in [What we changed](#what-we-changed).
 
 ### Why the commands moved
 
@@ -54,21 +66,62 @@ them at the documented default location, so our `plugin.json` needs no
 
 No file we copied needs a package manager. The plugin adds no dependencies.
 
+## What we removed
+
+We removed two optional hooks. We use neither. Each one has a defect that makes
+it unsafe to wire.
+
+| Path | Reason |
+| --- | --- |
+| `hooks/sdd-cache-pre.sh` | The cache revalidates the URL and never checks the cached body. |
+| `hooks/sdd-cache-post.sh` | The cache revalidates the URL and never checks the cached body. |
+| `hooks/SDD-CACHE.md` | It tells the reader to wire that cache. |
+| `hooks/simplify-ignore.sh` | The session-end restore overwrites any file named in its cache directory. |
+| `hooks/simplify-ignore-test.sh` | It tests that hook. |
+| `hooks/SIMPLIFY-IGNORE.md` | It tells the reader to wire that hook. |
+
+**The `simplify-ignore` defect is the more serious of the two.** The restore step
+reads a target path from a file in `.claude/.simplify-ignore-cache/`, then
+overwrites whatever sits at that path. It checks nothing. The guide tells you to
+put that directory in `.gitignore`, so the write is also quiet.
+
+We did not repair either hook. We removed them, because we do not use them.
+
+`hooks/hooks.json` registers only the `SessionStart` hook. It never referred to
+the removed files, so it needs no change.
+
+### The removal is enforced
+
+`scripts/check-removals.mjs` at the repository root fails the build if any
+removed path comes back. A bulk re-sync restores deleted files by default. The
+check catches that and prints the reason.
+
+If you decide a removed file should return, change the list in that script and
+change this section in the same commit.
+
+## What we changed
+
+| Path | Change |
+| --- | --- |
+| `hooks/session-start-test.sh` | The assertions now read `hookSpecificOutput.additionalContext`. |
+
+The test asserted `priority` and `message`. `hooks/session-start.sh` emits
+neither, so the test failed every time you ran it. The hook was correct. The test
+was stale.
+
+`session-start.sh` is the only file in this plugin that runs by itself. We
+corrected its test instead of deleting it, and the repository workflow now runs
+that test on every pull request.
+
 ## Known upstream defects we did not correct
 
-Three upstream files carry path or assertion errors. We left them exactly as
-upstream wrote them, so this copy stays diffable. The plugin
-[README](./README.md) describes each one and gives the correction to apply by
-hand:
+- `skills/idea-refine/SKILL.md` — a project-relative script path. It does not
+  resolve in a plugin install.
 
-- `hooks/SIMPLIFY-IGNORE.md` and `hooks/SDD-CACHE.md` — project-relative hook
-  paths that do not resolve in a plugin install.
-- `skills/idea-refine/SKILL.md` — a project-relative script path.
-- `hooks/session-start-test.sh` — a stale assertion. No runtime effect.
+The plugin [README](./README.md) gives the correction to apply by hand.
 
-If you correct any of these here, this copy stops being byte-identical. Record
-the change in this file and add a suffix to the version in
-`.claude-plugin/plugin.json`.
+If you correct this here, record the change in [What we
+changed](#what-we-changed) and raise the revision in the version.
 
 ## How to diff against upstream
 
@@ -79,5 +132,10 @@ git diff 48cb1168aeaaa70dfc2bbf709eddfa2a8ed8129a..HEAD -- \
   .claude/commands skills agents references hooks docs/agents.md LICENSE
 ```
 
-Read the diff, apply the changes you want, then update the SHA, the date, and
-the version in this file and in `.claude-plugin/plugin.json`.
+The diff shows upstream changes only. It does not show ours. Read [What we
+removed](#what-we-removed) and [What we changed](#what-we-changed) first, so you
+know which upstream changes to leave out.
+
+Then apply the changes you want, update the SHA, the date, and the version in
+this file and in `.claude-plugin/plugin.json`, and run
+`node scripts/check-removals.mjs` before you commit.

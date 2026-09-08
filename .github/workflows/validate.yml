@@ -28,6 +28,17 @@ jobs:
       - name: Validate manifest fields and plugin directories
         run: node scripts/validate-manifests.mjs
 
+      - name: Test the removal check
+        run: node scripts/check-removals-test.mjs
+
+      - name: Check that removed vendored files stay removed
+        run: node scripts/check-removals.mjs
+
+      - name: Test the agent-skills session hook
+        # The test calls the hook by a path relative to the plugin directory.
+        working-directory: plugins/agent-skills
+        run: bash hooks/session-start-test.sh
+
       - name: Validate every JSON file parses
         run: |
           set -euo pipefail

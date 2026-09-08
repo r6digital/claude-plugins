@@ -20,25 +20,33 @@ const fs = require('fs');
 const payload = JSON.parse(fs.readFileSync(process.env.PAYLOAD_PATH, 'utf8'));
 const hasJq = process.env.HAS_JQ === '1';
 
+const output = payload.hookSpecificOutput;
+
+if (!output) {
+  throw new Error('payload is missing hookSpecificOutput');
+}
+
+if (output.hookEventName !== 'SessionStart') {
+  throw new Error(`expected SessionStart event, got ${output.hookEventName}`);
+}
+
+const context = output.additionalContext;
+
+if (typeof context !== 'string') {
+  throw new Error('hookSpecificOutput is missing additionalContext');
+}
+
 if (hasJq) {
-  if (payload.priority !== 'IMPORTANT') {
-    throw new Error(`expected IMPORTANT priority, got ${payload.priority}`);
+  if (!context.includes('agent-skills loaded.')) {
+    throw new Error('context is missing startup preface');
   }
 
-  if (!payload.message.includes('agent-skills loaded.')) {
-    throw new Error('message is missing startup preface');
-  }
-
-  if (!payload.message.includes('# Using Agent Skills')) {
-    throw new Error('message is missing using-agent-skills content');
+  if (!context.includes('# Using Agent Skills')) {
+    throw new Error('context is missing using-agent-skills content');
   }
 } else {
-  if (payload.priority !== 'INFO') {
-    throw new Error(`expected INFO priority when jq is missing, got ${payload.priority}`);
-  }
-
-  if (!payload.message.includes('jq is required')) {
-    throw new Error('message is missing jq fallback guidance');
+  if (!context.includes('jq is required')) {
+    throw new Error('context is missing jq fallback guidance');
   }
 }
 

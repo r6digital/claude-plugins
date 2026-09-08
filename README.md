@@ -14,7 +14,7 @@ sessions (`claude --cloud`) both read that file, so both get the same tools.
 
 | Plugin | What it gives you |
 | --- | --- |
-| [`agent-skills`](./plugins/agent-skills) | 9 commands, 25 skills, and 4 agents for the full development cycle. Vendored from [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) under MIT. |
+| [`agent-skills`](./plugins/agent-skills) | 9 commands, 25 skills, and 4 agents for the full development cycle. Curated from [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) under MIT. |
 | [`qa-loop`](./plugins/qa-loop) | 3 commands that keep the builder session and the reviewer session apart. Written here. |
 
 ## How updates reach projects
@@ -258,9 +258,14 @@ CI runs the same checks on every push and pull request. See
 
 ## Update the vendored copy
 
-`plugins/agent-skills` is a copy of an upstream repository, pinned to a commit.
-[ATTRIBUTION.md](./plugins/agent-skills/ATTRIBUTION.md) records the commit and
-gives the command that diffs our copy against upstream.
+`plugins/agent-skills` is a curated copy of an upstream repository, pinned to a
+commit. We removed two optional hooks and corrected one test.
+[ATTRIBUTION.md](./plugins/agent-skills/ATTRIBUTION.md) records every
+difference and gives the command that diffs our copy against upstream.
+
+Read that file before you take a newer upstream commit. A bulk copy restores
+the files we removed. `scripts/check-removals.mjs` fails the build if that
+happens and prints the reason for each removal.
 
 ## Where the documentation differed from our plan
 

@@ -1,11 +1,12 @@
 # agent-skills
 
-A vendored copy of [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills).
+A curated copy of [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills).
 It gives Claude Code a set of engineering skills for the full development
 cycle: specify, plan, build, test, review, and ship.
 
 Read [ATTRIBUTION.md](./ATTRIBUTION.md) for the upstream commit, the licence,
-and the list of files we did and did not copy. The licence is MIT.
+and every difference from upstream. We removed two optional hooks and corrected
+one test. The licence is MIT.
 
 ## Commands
 
@@ -57,6 +58,11 @@ To remove the hook, delete `hooks/hooks.json` from this directory. Record the
 deletion in [ATTRIBUTION.md](./ATTRIBUTION.md), because it makes this copy
 differ from upstream.
 
+Upstream ships two more optional hooks, `simplify-ignore` and `sdd-cache`. We
+removed both. [ATTRIBUTION.md](./ATTRIBUTION.md) gives the reason for each one.
+Do not copy them back from upstream: `scripts/check-removals.mjs` fails the
+build if they return.
+
 ## Token cost
 
 The plugin adds about 2,600 tokens to every session. That is the always-on cost
@@ -65,30 +71,12 @@ when it fires.
 
 ## Known upstream defects
 
-We vendor this plugin byte-identical, so these upstream defects are still here.
-Do not correct them in place. Report them upstream, then pull the fix in with a
-new commit SHA.
-
-### The optional hook guides give the wrong path
-
-`hooks/SIMPLIFY-IGNORE.md` and `hooks/SDD-CACHE.md` describe two extra hooks you
-can wire by hand. Both tell you to run
-`bash "${CLAUDE_PROJECT_DIR}/hooks/<script>.sh"`. That path holds when the
-upstream repository is your project. It is wrong for a plugin install, where the
-scripts sit in the plugin directory instead. A hook wired that way exits 127 on
-every matching tool call.
-
-Use `"${CLAUDE_PLUGIN_ROOT}"/hooks/<script>.sh` instead. The `SessionStart` hook
-in `hooks/hooks.json` already does this and works as shipped.
+One upstream defect is still here. Report it upstream. Decide separately whether
+to correct it in this copy, and record the decision in
+[ATTRIBUTION.md](./ATTRIBUTION.md).
 
 ### `skills/idea-refine/SKILL.md` gives a relative script path
 
 It calls `bash skills/idea-refine/scripts/idea-refine.sh`, which resolves
 against your project, not the plugin. Use
 `"${CLAUDE_PLUGIN_ROOT}"/skills/idea-refine/scripts/idea-refine.sh`.
-
-### `hooks/session-start-test.sh` always fails
-
-The test asserts `priority` and `message` fields. `hooks/session-start.sh` emits
-only `hookSpecificOutput`. The hook is correct; the test is stale. Nothing runs
-this file at session time, so it has no runtime effect. Our CI does not run it.
