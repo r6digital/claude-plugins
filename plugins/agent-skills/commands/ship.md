@@ -12,7 +12,7 @@ Spawn three subagents concurrently using the Agent tool. **Issue all three Agent
 
 In Claude Code, each call passes `subagent_type` matching the persona's `name` field:
 
-1. **`code-reviewer`** — Run a five-axis review (correctness, readability, architecture, security, performance) on the staged changes or recent commits. Output the standard review template.
+1. **`code-reviewer`** — Run a five-axis review (correctness, readability, architecture, security, performance) on the staged changes or recent commits. Output the standard review template. If the change touches auth, payments, migrations, deletions, or secrets, pass `model: "opus"`.
 2. **`security-auditor`** — Run a vulnerability and threat-model pass. Check OWASP Top 10, secrets handling, auth/authz, dependency CVEs. Output the standard audit report.
 3. **`test-engineer`** — Analyze test coverage for the change. Identify gaps in happy path, edge cases, error paths, and concurrency scenarios. Output the standard coverage analysis.
 

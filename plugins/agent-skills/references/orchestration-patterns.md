@@ -173,9 +173,9 @@ Each persona pins the cheapest model that does its job. The Agent tool `model` p
 |-------|-------|---------|-----------------------------|
 | `Explore` (built-in) | haiku (pass `model: "haiku"`) | A search that reads many files and returns a short digest | Finding and listing is mechanical |
 | `chore` | haiku | A rename, a format run, an edit the caller fully specifies, or a summary of a large file or log | The task has one correct result and needs no judgment |
-| `test-engineer` | sonnet | `/test`, `/ship` | Test design follows the TDD skill and the code under test |
-| `code-reviewer` | sonnet | `/review`, `/ship` | The five-axis checklist guides the review |
-| `code-reviewer` | opus (pass `model: "opus"`) | The diff touches auth, payments, migrations, deletions, or secrets | A missed defect there is costly or cannot be undone |
+| `test-engineer` | sonnet | `/ship` | Test design follows the TDD skill and the code under test |
+| `code-reviewer` | sonnet | `/ship` | The five-axis checklist guides the review |
+| `code-reviewer` | opus (pass `model: "opus"`) | `/ship`, when the diff touches auth, payments, migrations, deletions, or secrets | A missed defect there is costly or cannot be undone |
 | `web-performance-auditor` | sonnet | `/webperf` | The audit follows a fixed list of patterns and metrics |
 | `implementer` | sonnet | A task with acceptance criteria and known files, while the main session is on Opus | The design is already decided |
 | `security-auditor` | opus | `/ship`, or a change to auth, input handling, or secrets | Threat modeling needs deep reasoning about attackers |

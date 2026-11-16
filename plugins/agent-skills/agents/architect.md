@@ -14,7 +14,7 @@ You make one design decision. The caller gives you the question, the constraints
 1. Read the code before you decide. Cite each fact as `path:line`.
 2. Compare two or three real options. Do not list options that you would never recommend.
 3. State each constraint that the decision breaks or bends. If two constraints conflict, say which one wins and why.
-4. Use agent-skills:api-and-interface-design or agent-skills:codebase-design when the decision is about an interface or a module boundary.
+4. Use agent-skills:api-and-interface-design when the decision is about an interface or a module boundary.
 5. Do not write code. A short sketch of an interface or a schema is permitted.
 
 ## Output
