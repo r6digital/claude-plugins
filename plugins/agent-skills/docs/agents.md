@@ -2,12 +2,17 @@
 
 Specialist personas that play a single role with a single perspective. Each persona is a Markdown file consumed as a system prompt by your harness (Claude Code, Cursor, Copilot, etc.).
 
-| Persona | Role | Best for |
-|---------|------|----------|
-| [code-reviewer](../agents/code-reviewer.md) | Senior Staff Engineer | Five-axis review before merge |
-| [security-auditor](../agents/security-auditor.md) | Security Engineer | Vulnerability detection, OWASP-style audit |
-| [test-engineer](../agents/test-engineer.md) | QA Engineer | Test strategy, coverage analysis, Prove-It pattern |
-| [web-performance-auditor](../agents/web-performance-auditor.md) | Web Performance Engineer | Core Web Vitals audit, loading/rendering/network analysis |
+| Persona | Role | Model | Best for |
+|---------|------|-------|----------|
+| [code-reviewer](../agents/code-reviewer.md) | Senior Staff Engineer | sonnet | Five-axis review before merge |
+| [security-auditor](../agents/security-auditor.md) | Security Engineer | opus | Vulnerability detection, OWASP-style audit |
+| [test-engineer](../agents/test-engineer.md) | QA Engineer | sonnet | Test strategy, coverage analysis, Prove-It pattern |
+| [web-performance-auditor](../agents/web-performance-auditor.md) | Web Performance Engineer | sonnet | Core Web Vitals audit, loading/rendering/network analysis |
+| [chore](../agents/chore.md) | Helper | haiku | Mechanical search, rename, format, specified edit, summary |
+| [implementer](../agents/implementer.md) | Implementation Engineer | sonnet | One fully specified task while the main session is on Opus |
+| [architect](../agents/architect.md) | Software Architect | opus | Hard-to-reverse design decisions; read-only |
+
+See [Model routing](../references/orchestration-patterns.md#model-routing) for the trigger of each model.
 
 ## How personas relate to skills and commands
 
