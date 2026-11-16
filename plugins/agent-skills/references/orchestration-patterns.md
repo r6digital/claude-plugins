@@ -110,7 +110,7 @@ main agent → research sub-agent (reads 50 files) → digest → main agent con
 
 **Cost:** one isolated sub-agent context. Worth it any time the alternative is loading hundreds of files into the main context.
 
-**On Claude Code, use the built-in `Explore` subagent** rather than defining a custom research persona. `Explore` runs on Haiku, is denied write/edit tools, and is purpose-built for this pattern. Define a custom research subagent only when `Explore` doesn't fit (e.g. you need a domain-specific system prompt the model wouldn't infer).
+**On Claude Code, use the built-in `Explore` subagent** rather than defining a custom research persona. `Explore` is denied write/edit tools and is purpose-built for this pattern. It inherits the main session model, so pass `model: "haiku"` in the Agent call. Define a custom research subagent only when `Explore` doesn't fit (e.g. you need a domain-specific system prompt the model wouldn't infer).
 
 ---
 
@@ -163,7 +163,25 @@ Don't redefine these. Layer your specialist personas (code-reviewer, security-au
 
 Plugin subagents do **not** support the `hooks`, `mcpServers`, or `permissionMode` frontmatter fields — these are silently ignored. If a future persona needs any of those, the user must copy the file into `.claude/agents/` or `~/.claude/agents/` instead.
 
-The fields that DO work in plugin agents are: `name`, `description`, `tools`, `disallowedTools`, `model`, `maxTurns`, `skills`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. Use `model` per-persona if you want to optimize cost (e.g. Haiku for `test-engineer` coverage scans, Sonnet for `code-reviewer`, Opus for `security-auditor`).
+The fields that DO work in plugin agents are: `name`, `description`, `tools`, `disallowedTools`, `model`, `maxTurns`, `skills`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. Use `model` per-persona to optimize cost. A persona without `model` inherits the main session model.
+
+### Model routing
+
+Each persona pins the cheapest model that does its job. The Agent tool `model` parameter overrides the pin for one call.
+
+| Agent | Model | Trigger | Why the model is sufficient |
+|-------|-------|---------|-----------------------------|
+| `Explore` (built-in) | haiku (pass `model: "haiku"`) | A search that reads many files and returns a short digest | Finding and listing is mechanical |
+| `chore` | haiku | A rename, a format run, an edit the caller fully specifies, or a summary of a large file or log | The task has one correct result and needs no judgment |
+| `test-engineer` | sonnet | `/test`, `/ship` | Test design follows the TDD skill and the code under test |
+| `code-reviewer` | sonnet | `/review`, `/ship` | The five-axis checklist guides the review |
+| `code-reviewer` | opus (pass `model: "opus"`) | The diff touches auth, payments, migrations, deletions, or secrets | A missed defect there is costly or cannot be undone |
+| `web-performance-auditor` | sonnet | `/webperf` | The audit follows a fixed list of patterns and metrics |
+| `implementer` | sonnet | A task with acceptance criteria and known files, while the main session is on Opus | The design is already decided |
+| `security-auditor` | opus | `/ship`, or a change to auth, input handling, or secrets | Threat modeling needs deep reasoning about attackers |
+| `architect` | opus | Constraints conflict, or a choice changes a data model, public interface, module boundary, or migration | The decision is hard to reverse |
+
+Delegate only when the subagent costs less than the same work inline. A subagent loads its own system prompt and tools before it starts. A one-step task is cheaper inline.
 
 ### Spawning multiple subagents in parallel
 
